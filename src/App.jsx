@@ -1,16 +1,31 @@
 import QuizCard from "./components/QuizCard";
 import { QUESTIONS } from "./data/data";
+import { getRandomQuestion } from "./services/getQuestion";
+import { useState, useEffect } from "react";
+
 function App() {
+	const [randomQuestion, setRandomQuestion] = useState(null);
+
+	function selectedOption() {
+		setRandomQuestion(getRandomQuestion());
+	}
+
+	// Load initial question when component mounts
+	useEffect(() => {
+		setRandomQuestion(getRandomQuestion());
+	}, []);
 	return (
 		<>
 			<div className="min-h-screen flex items-center justify-center">
-				{QUESTIONS.map((q) => {
-					return (
-						<div key={q.text}>
-							<QuizCard question={q.text} options={q.options} />
-						</div>
-					);
-				})}
+				{randomQuestion ? (
+					<QuizCard
+						question={randomQuestion.text}
+						options={randomQuestion.options}
+						handleOptionSelection={selectedOption}
+					/>
+				) : (
+					<div>Loading...</div>
+				)}
 			</div>
 		</>
 	);
